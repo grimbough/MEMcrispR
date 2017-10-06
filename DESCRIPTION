@@ -25,7 +25,8 @@ Imports:
     tidyr,
     tools,
     optimx,
-    stringr
+    stringr,
+    GGally
 Suggests:
     knitr,
     multidplyr,

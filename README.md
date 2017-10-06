@@ -2,7 +2,8 @@ Installation requires some additional packages.  The following code should insta
 
 ```{r}
 source("http://www.bioconductor.org/biocLite.R")
-biocLite(c("BiocStyle", "dplyr","ggplot2","data.table","lmerTest","Biostrings","Rsubread","ShortRead",
-           "gridExtra","tibble","tidyr","tools","optimx","stringr","hadley/multidplyr"))
+biocLite(c("BiocStyle","GGally","dplyr","ggplot2","data.table","lmerTest",
+           "Biostrings","Rsubread","ShortRead","gridExtra","tibble","tidyr",
+           "tools","optimx","stringr","hadley/multidplyr"))
 biocLite("grimbough/METAcrispR")           
 ```
