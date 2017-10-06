@@ -1,0 +1,33 @@
+Package: screenR
+Title: Crispr stuff
+Version: 0.0.19
+Authors@R: person("Mike", "Smith", email = "grimbough@gmail.com", role
+        = c("aut"))
+Description: Stuff
+License: MIT + file LICENSE
+VignetteBuilder: knitr
+Author: Mike Smith [aut]
+Maintainer: Mike Smith <grimbough@gmail.com>
+RoxygenNote: 6.0.1
+Depends:
+    R (>= 3.2)
+Imports:
+    dplyr,
+    ggplot2,
+    data.table,
+    lmerTest,
+    Biostrings,
+    Rsubread,
+    ShortRead,
+    gridExtra,
+    tibble,
+    tidyr,
+    tools,
+    optimx,
+    stringr
+Suggests:
+    knitr,
+    multidplyr,
+    rmarkdown,
+    BiocStyle
+LazyData: yes

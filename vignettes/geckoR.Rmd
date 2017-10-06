@@ -1,0 +1,175 @@
+---
+title: "Using screenR"
+author: "Mike Smith"
+output: 
+  BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Using screenR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8} 
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
+                      eval = FALSE, warning=FALSE, message=FALSE)
+```
+
+#Data preparation
+
+The sample sheet sheet should have 4 columns, and describes the layout of your experiment.  The first column gives the names of the files containing the guide counts.  The second column gives the name of sample.  The third and fourth columns define the treatment and replicate status.  For the treatment status, we recommend using 0 to indicate the initial condition, and 1 to represent the later observation.  This ensures that any changes reported by the subsequent analysis are relative to the initial observations.  An example of a sample sheet is given here:
+
+```
+File	Sample	Treatment Replicate 
+GeCKOv2_1A_count.txt	  C111	    0	1
+GeCKOv2_1B_count.txt	  C111	    0	1
+GeCKOv2_2A_count.txt	  C111	    1	1
+GeCKOv2_2B_count.txt	  C111	    1	1
+GeCKOv2_1Ar_count.txt	  C111	    0	2
+GeCKOv2_1Br_count.txt	  C111	    0	2
+GeCKOv2_2Ar_count.txt	  C111	    1	2
+GeCKOv2_2Br_count.txt	  C111	    1	2
+```
+
+For the moment, the sample sheet should be saved as a tab delimited text file.  In the future we may add support for other formats, including Excel spread sheets, but this is not currently available.
+
+
+# Loading the library
+
+The first step in an analysis is to load the library like this:
+
+```{r, loadLib}
+library(screenR)
+```
+
+# Starting with raw read data
+
+## Aligning reads
+
+This step can be performed using any tool of your choice, but *screenR* provides an option to do this via the *Rsubread* package, using the function `screenR.align()`.
+
+There are a number of arguments that you need to provide to this function: `path` defines the location of the folder containing the FASTQ files, and `sampleSheet` is the name of the sample sheet file, which should meet the structure defined earlier.  `outputDir` gives the location where the function should output the aligned bam files.
+
+The final argument is `guideLibraries` which allows you to specify the set of guide RNAs your reads should be aligned against. Currently *screenR* contains details for the GeCKOv2 and TKO CRISPR libraries, and you can choose any combination from **GeCKOv2_A**, **GeCKOv2_B**, **TKOv1_base** and **TKOv2_supp**. It is advisable to pick to the minimum selection that may still be possible e.g. if you used the GeCKO kit do not select *TKOv1...* as this will cause the alignment step to take longer than necessary.  It is also possible to provide details of other libraries that are not distributed with the package; this is discussed in the next section.
+
+This function will create a **SampleSheet.txt** in the output directory, which can be used with the next function in our analysis meaning you do not need to create this each time.
+
+```{r, alignReads, eval=FALSE, message=FALSE, cache=TRUE}
+screenR.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/raw_data/", 
+              sampleSheet = "SampleSheet.txt", 
+              outputDir = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/aligned/",
+              guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"))
+```
+
+### Using custom guide libraries
+
+If *screenR* doesn't include details of the CRISPR library that you are using, you can provide details of the guides manually.  To do this you can provide the `guideLibraries` argument with the location of one or more files detailing the guides in your library.  These files are required to be text files with four columns and one row per guide.  For each guide the columns give the ID of the targeted gene, a unique ID for the guide, the guide sequence, and a name for the library, with columns nameed **gene_id**,	**guide_id**, **seq**,	**library** respectively.  An example might look something like this:
+
+```
+gene_id	guide_id	seq	library
+A1CF	sgA1CF_1	ATGACTCTCATACTCCACGA	KOHGW-M1
+A1CF	sgA1CF_2	CGCGCACTGGTCCAGCGCAC	KOHGW-M1
+A1CF	sgA1CF_3	CCAAGCTATATCCTGTGCGC	KOHGW-M1
+A3GALT2	sgA3GALT2_1	CGAATGCGCGTCGCGTTCGA	KOHGW-M1
+A3GALT2	sgA3GALT2_2	CTTCGAACGCGACGCGCATT	KOHGW-M1
+A3GALT2	sgA3GALT2_3	CGGCAGATCCTACTTACACT	KOHGW-M1
+```
+
+An example of providing them to the `screenR.align()` function might look something like the code below. *NOTE: this actual example will perform badly, as it will align reads to the wrong guide library.*
+
+
+```{r, customLibs, eval=FALSE, message=FALSE, cache=TRUE}
+screenR.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/raw_data/", 
+              sampleSheet = "SampleSheet.txt", 
+              outputDir = "/tmpdata/msmith/aligned",
+              guideLibraries = c("/g/korbel/shared/projects/crispr_screens/balca_libraries/balca_lib_M1.csv", 
+                                 "/g/korbel/shared/projects/crispr_screens/balca_libraries/balca_lib_M2.csv"))
+```
+
+## Counting alignments
+
+After alignment we need to count how many reads aligned to each guide sequence.  This is simlar to using *samtools idxstat* if you're using an external program.  *screenR* performs this using the function `screenR.count()`.  Many of the arguments are the same as seen above, but not that this time `path` is the location of the aligned BAM files, and `outputDir` is the location where the table of counts should be created.
+
+This function will again create a **SampleSheet.txt** that can be directly used with the next function in our analysis.
+
+```{r, countReads, eval=FALSE, message=FALSE, cache=TRUE}
+screenR.count(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/aligned", 
+              sampleSheet = "SampleSheet.txt", 
+              outputDir = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/counts",
+              guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"))
+```
+
+# Starting with guide counts
+
+## Reading count data
+
+Once you've performed the alignement and guide counting we're ready to read the count data.  This is performed using the function `screenR.readCounts()`, which takes two arguments.  One of these is the name of the sample sheet file, and the other is the path where the sample sheet and read count files can be found.
+
+```{r, readData, message=FALSE, cache=TRUE}
+guideCounts <- screenR.readCounts(sampleSheet = "SampleSheet.txt", 
+                                  path = "/g/korbel/shared/projects/crispr_screens/soft_agar/c93/counts")
+```
+
+The resulting object is essentially a large table containing the counts for all guides in the experiment and the gene they target, along with the meta-data listed in the sample sheet such as the sample name, treatment and replicate status.
+
+```{r, printData, message=FALSE, cache=TRUE}
+guideCounts
+```
+
+# Normalisation
+ 
+Given the nature of sequencing experiments, it is likely that there will be differences the total number of reads generated for the various conditions and replicates.  If we work with the raw counts, there is a chance that any trends we find in the data reflect the technical differences in read-depth, rather than anything biological.  In order to reduce the impact of these differences we can use the function `normalizeBetweenSamples()` to adjust the counts and bring the various samples in line with each other.
+
+```{r, readCountNormalisation, message=FALSE}
+guideCounts <- screenR.normalizeBetweenSamples(guideCounts)
+```
+
+# Quality control plots
+
+There are a number of statistics we can look at to evaluate the quality of the sequencing data.  
+
+For example, we can  assess the distribution of reads across the guides, and compare this across libraries and repicates using the function `guideDistributions()`.  You can use this to evaluate whether you need to perform the between sample normalisation mentioned previously.  If you have already carried out the normalisation `guideDistributions()` will display the distributions of both the raw and normalised counts, as in the example below:
+
+```{r, qc_plots2, fig.height=5, fig.width=12.5, dev='png', message=FALSE}
+screenR.guideDistribution(guideCounts)
+```
+
+If you have replicates of each condition (and you should have replicates) we can compare the counts of control guides using the function `screenR.compareReplicates()`.  By default this will try to compare the counts for all guides across the replicates, not just the controls.  This can be very slow, so we can use the argument `controlString` to specify a pattern in the guide names that we should use to select the controls.  For the GeCKO libraries the control guides all contain the word 'control', but this be different for different CRIPR libraries.   If you have more than two replicates this function will show each compared to all the rest e.g. in the case of 3 replicates: rep1 vs rep2, rep1 vs rep3 & rep2 vs rep3.
+
+```{r, qc_plots, fig.height=6, fig.width=10, dev='png', message=FALSE}
+screenR.compareReplicates(guideCounts, controlString = "control")
+```
+
+Ideally the control counts will lie along the diagonal line and the correlation reported in the upper right half of the plots will be close to 1, indicating that the controls have performed similarly across the two replicates.  If this is not the case, then you may have cause to believe one (or more) of the replicates was not successful.
+
+# Fit mixed effects model
+
+The model can be fitted using the function `screenR.fitModel()`.  This calculates
+
+```{r, eval=FALSE}
+topTable <- screenR.fitModel(guideCounts)
+```
+```{r, eval=FALSE, echo=FALSE}
+load("/g/huber/users/msmith/geckoR/toptable.rda")
+```
+
+## Faster model fitting
+
+To improve the speed of the model fitting step, you can also try a multicore approach.  This splits the table of counts into several pieces and computes on them in parallel, making use of the fact most computers can carry out several tasks simultaneously.  This is purely a means to speed up the computation, and the results should be identical to if you use the fitModel() function above.
+
+In order to use this approach you will need to install the multidplyr package.  This is currently not available on CRAN, but can be installed from github using the code below.  You will only need to do this step the first time you try to run the multicore model fitting, after that the package will be be installed and available.  
+
+```{r, installMutlidplyr, eval=FALSE}
+devtools::install_github("hadley/multidplyr")
+```
+
+Since mutlidplyr is not in CRAN, support for this is to be considered experimental, although I have had no problems running it in practice.  You can execute the multicore model fit in a very similar fashion to before, just this time using the `fitModel.mc()` function.
+
+```{r, fitModel.mc, eval=FALSE}
+topTable2 <- fitModel.mc(guideCounts)
+```
+
+# Visualising results
+
+```{r}
+screenR.volcanoPlot(topTable, p.thresh = 0.05, fc.thresh = 1)
+```
