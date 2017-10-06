@@ -1,9 +1,10 @@
-Package: screenR
-Title: Crispr stuff
-Version: 0.0.19
+Package: metacrispR
+Title: Mixed Effects Tool for Analysis of CRISPR screens
+Version: 0.0.20
 Authors@R: person("Mike", "Smith", email = "grimbough@gmail.com", role
         = c("aut"))
-Description: Stuff
+Description: Alignment, quality control, and analysis of CRISPR screen 
+    experiments.
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 Author: Mike Smith [aut]

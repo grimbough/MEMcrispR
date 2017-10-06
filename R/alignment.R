@@ -65,7 +65,7 @@
 #' @importFrom Rsubread align buildindex
 #' @importFrom tools file_path_sans_ext
 #' @export
-screenR.align <- function(path, sampleSheet = NULL, outputDir = NULL, 
+metacrispr.align <- function(path, sampleSheet = NULL, outputDir = NULL, 
                           guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"),
                           ncores = 4){
   
@@ -109,7 +109,7 @@ screenR.align <- function(path, sampleSheet = NULL, outputDir = NULL,
 #' Count occurrences of each guide in aligned data.
 #' 
 #' This function expects to be provided a folder containing BAM files 
-#' produced either by \code{\link{screenR.align}} or another aligner. It will
+#' produced either by \code{\link{metacrispr.align}} or another aligner. It will
 #' count the number of reads mapping to each guide in the reference and 
 #' produce a table of the same structure as produced by \code{samtools idxstat}.
 #' 
@@ -127,7 +127,7 @@ screenR.align <- function(path, sampleSheet = NULL, outputDir = NULL,
 #' @importFrom tidyr separate gather
 #' @importFrom tibble as_data_frame data_frame
 #' @export
-screenR.count <- function(path, sampleSheet = NULL, outputDir = NULL, 
+metacrispr.count <- function(path, sampleSheet = NULL, outputDir = NULL, 
                           guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"),
                           ncores = 4) {
   

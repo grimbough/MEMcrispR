@@ -69,7 +69,7 @@
 #' 
 #' @return data.table of genes with log fold-change and adjusted p.values
 #' @export
-screenR.fitModel.sampleSpecific <- function(countsTable, controlString = 'control') {
+metacrispr.fitModel.sampleSpecific <- function(countsTable, controlString = 'control') {
   
   if(!'norm_counts' %in% colnames(countsTable)) {
     countsTable <- mutate(countsTable, norm_counts = counts)
@@ -87,15 +87,15 @@ screenR.fitModel.sampleSpecific <- function(countsTable, controlString = 'contro
           ## if there is only one guide for the gene, return NULL
           data.frame()
         } else {
-          screenR:::.fitGuide(dat = .)
+          metacrispr:::.fitGuide(dat = .)
         }
       } else {
         ## if we have 2 libraries, but only have one guide per library stick 
         ## with the simpler model
         if( nrow(unique(dat[,'guide_id'])) == nrow(unique(dat[,'library'])) ) {
-          screenR:::.fitGuide.sampleSpecific(dat = .)
+          metacrispr:::.fitGuide.sampleSpecific(dat = .)
         } else {
-          screenR:::.fitLibGuide.sampleSpecific(dat = .)
+          metacrispr:::.fitLibGuide.sampleSpecific(dat = .)
         }
       }) %>%
     ungroup()

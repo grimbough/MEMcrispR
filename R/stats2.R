@@ -98,7 +98,7 @@
 #' 
 #' @return data.table of genes with log fold-change and adjusted p.values
 #' @export
-screenR.fitModel <- function(countsTable, controlString = 'control') {
+metacrispr.fitModel <- function(countsTable, controlString = 'control') {
   
   if(!'norm_counts' %in% colnames(countsTable)) {
     countsTable <- mutate(countsTable, norm_counts = counts)
@@ -116,15 +116,15 @@ screenR.fitModel <- function(countsTable, controlString = 'control') {
           ## if there is only one guide for the gene, return NULL
           data.frame()
         } else {
-          screenR:::.fitGuide(dat = .)
+          metacrispr:::.fitGuide(dat = .)
         }
       } else {
         ## if we have 2 libraries, but only have one guide per library stick 
         ## with the simpler model
         if( nrow(unique(.[,'guide_id'])) == nrow(unique(.[,'library'])) ) {
-          screenR:::.fitGuide(dat = .)
+          metacrispr:::.fitGuide(dat = .)
         } else {
-          screenR:::.fitLibGuide(dat = .)
+          metacrispr:::.fitLibGuide(dat = .)
         }
       }) %>%
     ungroup()
@@ -148,7 +148,7 @@ screenR.fitModel <- function(countsTable, controlString = 'control') {
 #' @return data.table of genes with log fold-change and adjusted p.values
 #' @importFrom multidplyr create_cluster
 #' @export
-screenR.fitModel.mc <- function(countsTable, ncores = NA) {
+metacrispr.fitModel.mc <- function(countsTable, ncores = NA) {
   
   require(multidplyr)
   cluster <- create_cluster(cores = ncores)
@@ -169,15 +169,15 @@ screenR.fitModel.mc <- function(countsTable, ncores = NA) {
         if (nrow(unique(.[,'guide_id'])) == 1) { 
           data.frame()
         } else {
-          screenR:::.fitGuide(dat = .) 
+          metacrispr:::.fitGuide(dat = .) 
         } 
       } else {
         ## if we have 2 libraries, but only have one guide per library stick 
         ## with the simpler model
         if( nrow(unique(.[,'guide_id'])) == nrow(unique(.[,'library'])) ) {
-          screenR:::.fitGuide(dat = .)
+          metacrispr:::.fitGuide(dat = .)
         } else {
-          screenR:::.fitLibGuide(dat = .)
+          metacrispr:::.fitLibGuide(dat = .)
         }
       }
     ) %>%

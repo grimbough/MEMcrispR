@@ -72,7 +72,7 @@ readGuideSequencesSimple <- function(file) {
 
 #' Read text files of counts
 #' 
-#' This is the main data import function for the \code{screenR} package.  It 
+#' This is the main data import function for the \code{METAcrispR} package.  It 
 #' expects to be provided with a directory location containing a sample sheet
 #' and text files holding the observed counts for each guide, with one file per
 #' sequencing library.
@@ -85,7 +85,7 @@ readGuideSequencesSimple <- function(file) {
 #' @export
 #' @importFrom data.table data.table rbindlist
 #' @importClassesFrom data.table data.table
-screenR.readCounts <- function(path, sampleSheet = NULL, guideLibraries = NULL) {
+metacrispr.readCounts <- function(path, sampleSheet = NULL, guideLibraries = NULL) {
   
   if(is.null(sampleSheet))
     sampleSheet <- "SampleSheet.txt"
@@ -111,7 +111,7 @@ screenR.readCounts <- function(path, sampleSheet = NULL, guideLibraries = NULL) 
     data('human.gecko.v2.libA', 'human.gecko.v2.libB', 
          'human.TKO.v1.base', 'human.TKO.v1.supp', 
          'human.CRiNCL.v1',
-        package = 'screenR',
+        package = 'metacrispr',
         envir = environment())
     lib_gRNAs <- bind_rows(human.gecko.v2.libA, human.gecko.v2.libB, 
                        human.TKO.v1.base, human.TKO.v1.supp,

@@ -1,7 +1,7 @@
 # #' @importFrom tidyr spread
 # #' @importFrom gridExtra grid.arrange
 # #' @importFrom  utils combn
-# screenR.compareControlGuides <- function(countTable, controlString = NULL, treatment = NULL) {
+# metacrispr.compareControlGuides <- function(countTable, controlString = NULL, treatment = NULL) {
 #   
 #   dat <- ungroup(countTable)
 #   if(!is.null(controlString)) {
@@ -93,7 +93,7 @@
 
 #' Compare the counts of control guides for all samples in the experiment
 #' 
-#' @param countTable Standard \code{screenR} table of count data.
+#' @param countTable Standard \code{metacrispr} table of count data.
 #' @param controlString Specify a string that identifys the control guides.  
 #' This is often 'control', 'non-targetting' etc.  If this is left as NULL
 #' all guides will be compared, which can be very slow and/or crash.
@@ -101,7 +101,7 @@
 #' @export
 #' @importFrom tidyr spread
 #' @importFrom GGally ggscatmat
-screenR.compareControlGuides <- function(countTable, controlString = NULL) {
+metacrispr.compareControlGuides <- function(countTable, controlString = NULL) {
   
   dat <- ungroup(countTable)
   if(!is.null(controlString)) {
@@ -138,7 +138,7 @@ screenR.compareControlGuides <- function(countTable, controlString = NULL) {
 #' 
 #' @export
 #' @importFrom tidyr gather
-screenR.guideDistribution <- function(countTable) {
+metacrispr.guideDistribution <- function(countTable) {
   
   dat <- 
     ungroup(countTable) %>%
@@ -164,8 +164,8 @@ screenR.guideDistribution <- function(countTable) {
 #' specified p-value threshold and above a fold change threshold are 
 #' highlighted and named in the plot.
 #' 
-#' @param topTable Standard \code{screenR} table of model results.  Typically
-#' produced by \code{\link{screenR.fitModel}}.
+#' @param topTable Standard \code{metacrispr} table of model results.  Typically
+#' produced by \code{\link{metacrispr.fitModel}}.
 #' @param fc.thresh Specify a fold change cutoff. Expects to be provide the raw
 #' fold change, which will be automatically converted to log2 scale for 
 #' plotting.
@@ -174,8 +174,7 @@ screenR.guideDistribution <- function(countTable) {
 #' -log10 scale for plotting.
 #' 
 #' @export
-#' @importFrom ggrepel geom_text_repel
-screenR.volcanoPlot <- function(topTable, fc.thresh = 1, p.thresh = 0.05) {
+metacrispr.volcanoPlot <- function(topTable, fc.thresh = 1, p.thresh = 0.05) {
   
   ggplot(topTable) + 
     geom_point(aes(x = log2(fc), y = -log10(1e-16+p_val)), alpha = 0.4, colour = "#939393") +
@@ -183,7 +182,7 @@ screenR.volcanoPlot <- function(topTable, fc.thresh = 1, p.thresh = 0.05) {
             aes(x =  log2(fc), y = -log10(1e-16+p_val)), color = "#EA0303", size = 1) +
     geom_point(data = filter(topTable, log2(fc) > fc.thresh, p_val < p.thresh),
                aes(x =  log2(fc), y = -log10(1e-16+p_val)), color = "#EA0303", size = 4, pch = 1) +
-    geom_text_repel(data = filter(topTable, log2(fc) > fc.thresh, p_val < p.thresh),
+    geom_text(data = filter(topTable, log2(fc) > fc.thresh, p_val < p.thresh),
             aes(x =  log2(fc), y = -log10(1e-16+p_val), label = as.character(gene_id)), 
             color = "#000000", size = 3) +
     ## include dotted lines for the thresholds
@@ -198,7 +197,7 @@ screenR.volcanoPlot <- function(topTable, fc.thresh = 1, p.thresh = 0.05) {
 }
 
 #' @export
-screenR.libraryCounts <- function(countTable) {
+metacrispr.libraryCounts <- function(countTable) {
   
   dat <- ungroup(countTable) %>%
     group_by(treatment, library, replicate) %>%
@@ -264,7 +263,7 @@ screenR.libraryCounts <- function(countTable) {
 
 #' @export
 #' @importFrom tidyr unite
-screenR.pcaPlot <- function(countTable, controlString = NULL) {
+metacrispr.pcaPlot <- function(countTable, controlString = NULL) {
   
   ## TODO: include proportion of variation explained
   
@@ -286,7 +285,7 @@ screenR.pcaPlot <- function(countTable, controlString = NULL) {
 }
 
 
-screenR.controlGuideCorrelation <- function(countsTable) {
+metacrispr.controlGuideCorrelation <- function(countsTable) {
   
   tmp <-
    ungroup(countsTable) %>%
