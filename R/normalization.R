@@ -63,7 +63,7 @@ normalizeBetweenSamples.readdepth <- function(countTable) {
 #' 
 #' @return data.table of counts
 #' @export
-normalizeBetweenSamples <- function(countTable) {
+metacrispr.normalizeBetweenSamples <- function(countTable) {
   
     tmpTab <- 
       group_by(countTable, gene_id) %>% 
