@@ -111,7 +111,7 @@ metacrispr.readCounts <- function(path, sampleSheet = NULL, guideLibraries = NUL
     data('human.gecko.v2.libA', 'human.gecko.v2.libB', 
          'human.TKO.v1.base', 'human.TKO.v1.supp', 
          'human.CRiNCL.v1',
-        package = 'metacrispr',
+        package = 'metacrispR',
         envir = environment())
     lib_gRNAs <- bind_rows(human.gecko.v2.libA, human.gecko.v2.libB, 
                        human.TKO.v1.base, human.TKO.v1.supp,

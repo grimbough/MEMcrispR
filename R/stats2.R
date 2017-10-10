@@ -116,15 +116,15 @@ metacrispr.fitModel <- function(countsTable, controlString = 'control') {
           ## if there is only one guide for the gene, return NULL
           data.frame()
         } else {
-          metacrispr:::.fitGuide(dat = .)
+          metacrispR:::.fitGuide(dat = .)
         }
       } else {
         ## if we have 2 libraries, but only have one guide per library stick 
         ## with the simpler model
         if( nrow(unique(.[,'guide_id'])) == nrow(unique(.[,'library'])) ) {
-          metacrispr:::.fitGuide(dat = .)
+          metacrispR:::.fitGuide(dat = .)
         } else {
-          metacrispr:::.fitLibGuide(dat = .)
+          metacrispR:::.fitLibGuide(dat = .)
         }
       }) %>%
     ungroup()
@@ -169,15 +169,15 @@ metacrispr.fitModel.mc <- function(countsTable, ncores = NA) {
         if (nrow(unique(.[,'guide_id'])) == 1) { 
           data.frame()
         } else {
-          metacrispr:::.fitGuide(dat = .) 
+          metacrispR:::.fitGuide(dat = .) 
         } 
       } else {
         ## if we have 2 libraries, but only have one guide per library stick 
         ## with the simpler model
         if( nrow(unique(.[,'guide_id'])) == nrow(unique(.[,'library'])) ) {
-          metacrispr:::.fitGuide(dat = .)
+          metacrispR:::.fitGuide(dat = .)
         } else {
-          metacrispr:::.fitLibGuide(dat = .)
+          metacrispR:::.fitLibGuide(dat = .)
         }
       }
     ) %>%

@@ -2,17 +2,17 @@
 title: "Using METAcrispR"
 author: "Mike Smith"
 output: 
-  BiocStyle::html_document
+  BiocStyle::html_document:
+    dev: CairoPNG
 vignette: >
   %\VignetteIndexEntry{Using METAcrispR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8} 
 ---
 
-```{r global_options, include=FALSE, dev = "svg"}
+```{r global_options, include=FALSE}
 knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
-                      eval = FALSE, warning=FALSE, message=FALSE,
-                      dev = "svg")
+                      eval = FALSE, warning=FALSE, message=FALSE)
 ```
 
 #Data preparation
@@ -134,10 +134,10 @@ For example, we can  assess the distribution of reads across the guides, and com
 metacrispr.guideDistribution(guideCounts)
 ```
 
-If you have replicates of each condition (and you should have replicates) we can compare the counts of control guides using the function `metacrispr.compareReplicates()`.  By default this will try to compare the counts for all guides across the replicates, not just the controls.  This can be very slow, so we can use the argument `controlString` to specify a pattern in the guide names that we should use to select the controls.  For the GeCKO libraries the control guides all contain the word 'control', but this be different for different CRIPR libraries.   If you have more than two replicates this function will show each compared to all the rest e.g. in the case of 3 replicates: rep1 vs rep2, rep1 vs rep3 & rep2 vs rep3.
+If you have replicates of each condition (and you should have replicates) we can compare the counts of control guides using the function `metacrispr.compareControlGuides()`.  By default this will try to compare the counts for all guides across the replicates, not just the controls.  This can be very slow, so we can use the argument `controlString` to specify a pattern in the guide names that we should use to select the controls.  For the GeCKO libraries the control guides all contain the word 'control', but this be different for different CRIPR libraries.   If you have more than two replicates this function will show each compared to all the rest e.g. in the case of 3 replicates: rep1 vs rep2, rep1 vs rep3 & rep2 vs rep3.
 
 ```{r, qc_plots, fig.height=6, fig.width=10, message=FALSE}
-metacrispr.compareReplicates(guideCounts, controlString = "control")
+metacrispr.compareControlGuides(guideCounts, controlString = "control")
 ```
 
 Ideally the control counts will lie along the diagonal line and the correlation reported in the upper right half of the plots will be close to 1, indicating that the controls have performed similarly across the two replicates.  If this is not the case, then you may have cause to believe one (or more) of the replicates was not successful.
