@@ -1,12 +1,15 @@
 #' @importFrom Biostrings DNAStringSet BStringSet 
 #' @importFrom ShortRead ShortRead writeFasta
-.createReferenceFasta <- function(guideID = NULL, guideSequences = NULL, guideLibrary = NULL) {
+.createReferenceFasta <- function(guideID = NULL, guideSequences = NULL, guideLibrary = NULL,
+                                  guidePrefix = NULL, guideSuffix = NULL) {
   
-  seqs <- DNAStringSet(paste0("NNNNCTTGTGGAAAGGACGAAACACCG",
+  seqs <- DNAStringSet(paste0(guidePrefix,
                               as.character(guideSequences), 
-                              "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCAACTTGAAAAAGTGGCAC"))
+                              guideSuffix))
   
-  id <- BStringSet(gsub(pattern = " ", replacement = "*", x = paste(as.character(guideLibrary), as.character(guideID), sep = ":")))
+  id <- BStringSet(gsub(pattern = " ", replacement = "*", 
+                        x = paste(as.character(guideLibrary), 
+                                  as.character(guideID), sep = ":")))
   
   fasta <- ShortRead(id = id, sread = seqs)
   tmpFile <- tempfile()
@@ -15,8 +18,6 @@
   return(tmpFile)
   
 }
-
-
 
 .selectReference <- function(guideLibraries) {
   
@@ -59,6 +60,12 @@
 #' written.  If left NULL the current working directory is used.
 #' @param guideLibraries Names of libraries to align against. These can be
 #' paths to files for custom libraries not included in the package.
+#' @param guidePrefix Depending upon the CRISPR library you are using you may
+#' expect all your reads to contain a common sequence before (5` of) the 
+#' particular guide is read.  Provide this common sequence here to aid with 
+#' alignment.
+#' @param guideSuffix Similar to \code{guidePrefix}, but for a common sequence
+#' that appears after (3` of) the guide sequence.
 #' @param ncores The number of CPU cores to be used by the Rsubread 
 #' aligner. Defaults to 4.
 #' 
@@ -67,6 +74,7 @@
 #' @export
 metacrispr.align <- function(path, sampleSheet = NULL, outputDir = NULL, 
                           guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"),
+                          guidePrefix = NULL, guideSuffix = NULL,
                           ncores = 4){
   
   if(is.null(sampleSheet))
@@ -77,7 +85,9 @@ metacrispr.align <- function(path, sampleSheet = NULL, outputDir = NULL,
   referenceTab <- .selectReference(guideLibraries)
   reference <- .createReferenceFasta(referenceTab[['guide_id']],
                                      referenceTab[['seq']],
-                                     referenceTab[['library']])
+                                     referenceTab[['library']],
+                                     guidePrefix = guidePrefix,
+                                     guideSuffix = guideSuffix)
   
   idx <- tempfile()
 

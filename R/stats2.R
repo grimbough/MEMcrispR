@@ -146,12 +146,11 @@ metacrispr.fitModel <- function(countsTable, controlString = 'control') {
 #' model fitting
 #' 
 #' @return data.table of genes with log fold-change and adjusted p.values
-#' @importFrom multidplyr create_cluster
 #' @export
 metacrispr.fitModel.mc <- function(countsTable, ncores = NA) {
   
   require(multidplyr)
-  cluster <- create_cluster(cores = ncores)
+  cluster <- multidplyr::create_cluster(cores = ncores)
   
   if(!'norm_counts' %in% colnames(countsTable)) {
     countsTable <- mutate(countsTable, norm_counts = counts)

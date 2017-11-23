@@ -5,7 +5,8 @@
 \title{Align reads to reference}
 \usage{
 metacrispr.align(path, sampleSheet = NULL, outputDir = NULL,
-  guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"), ncores = 4)
+  guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"), guidePrefix = NULL,
+  guideSuffix = NULL, ncores = 4)
 }
 \arguments{
 \item{path}{Full file path to the folder containing the data.}
@@ -18,6 +19,14 @@ written.  If left NULL the current working directory is used.}
 
 \item{guideLibraries}{Names of libraries to align against. These can be
 paths to files for custom libraries not included in the package.}
+
+\item{guidePrefix}{Depending upon the CRISPR library you are using you may
+expect all your reads to contain a common sequence before (5` of) the 
+particular guide is read.  Provide this common sequence here to aid with 
+alignment.}
+
+\item{guideSuffix}{Similar to \code{guidePrefix}, but for a common sequence
+that appears after (3` of) the guide sequence.}
 
 \item{ncores}{The number of CPU cores to be used by the Rsubread 
 aligner. Defaults to 4.}

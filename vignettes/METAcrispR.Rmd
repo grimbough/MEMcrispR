@@ -50,7 +50,9 @@ This step can be performed using any tool of your choice, but *metacrispr* provi
 
 There are a number of arguments that you need to provide to this function: `path` defines the location of the folder containing the FASTQ files, and `sampleSheet` is the name of the sample sheet file, which should meet the structure defined earlier.  `outputDir` gives the location where the function should output the aligned bam files.
 
-The final argument is `guideLibraries` which allows you to specify the set of guide RNAs your reads should be aligned against. Currently *metacrispr* contains details for the GeCKOv2 and TKO CRISPR libraries, and you can choose any combination from **GeCKOv2_A**, **GeCKOv2_B**, **TKOv1_base** and **TKOv2_supp**. It is advisable to pick to the minimum selection that may still be possible e.g. if you used the GeCKO kit do not select *TKOv1...* as this will cause the alignment step to take longer than necessary.  It is also possible to provide details of other libraries that are not distributed with the package; this is discussed in the next section.
+The next argument is `guideLibraries` which allows you to specify the set of guide RNAs your reads should be aligned against. Currently *metacrispr* contains details for the GeCKOv2 and TKO CRISPR libraries, and you can choose any combination from **GeCKOv2_A**, **GeCKOv2_B**, **TKOv1_base** and **TKOv2_supp**. It is advisable to pick to the minimum selection that may still be possible e.g. if you used the GeCKO kit do not select *TKOv1...* as this will cause the alignment step to take longer than necessary.  It is also possible to provide details of other libraries that are not distributed with the package; this is discussed in the next section.
+
+Finally, we can use the `guidePrefix` and `guideSuffix` arguments to provide details of flanking sequences that surround the specific guide sequence and are common to all reads in the dataset. *Note: these used to be hard-coded for the GeCKO data, but you must provide them now we work with more libraries*.
 
 This function will create a **SampleSheet.txt** in the output directory, which can be used with the next function in our analysis meaning you do not need to create this each time.
 
@@ -58,7 +60,9 @@ This function will create a **SampleSheet.txt** in the output directory, which c
 metacrispr.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/raw_data/", 
               sampleSheet = "SampleSheet.txt", 
               outputDir = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/aligned/",
-              guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"))
+              guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"),
+              guidePrefix = "NNNNCTTGTGGAAAGGACGAAACACCG",
+              guideSuffix = "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGCTAGTCCGTTATCAACTTGAAAAAGTGGCAC")
 ```
 
 ### Using custom guide libraries
@@ -83,7 +87,9 @@ metacrispr.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf1
               sampleSheet = "SampleSheet.txt", 
               outputDir = "/tmpdata/msmith/aligned",
               guideLibraries = c("/g/korbel/shared/projects/crispr_screens/balca_libraries/balca_lib_M1.csv", 
-                                 "/g/korbel/shared/projects/crispr_screens/balca_libraries/balca_lib_M2.csv"))
+                                 "/g/korbel/shared/projects/crispr_screens/balca_libraries/balca_lib_M2.csv",
+              guidePrefix = NULL,
+              guideSuffix = "GTTTAAGAGCTATGCTGGAAACAGCATAGC"))
 ```
 
 ## Counting alignments

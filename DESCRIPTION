@@ -1,6 +1,6 @@
 Package: metacrispR
 Title: Mixed Effects Tool for Analysis of CRISPR screens
-Version: 0.0.21
+Version: 0.0.22
 Authors@R: person("Mike", "Smith", email = "grimbough@gmail.com", role
         = c("aut"))
 Description: Alignment, quality control, and analysis of CRISPR screen 
