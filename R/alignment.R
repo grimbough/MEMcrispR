@@ -91,7 +91,7 @@ metacrispr.align <- function(path, sampleSheet = NULL, outputDir = NULL,
   
   idx <- tempfile()
 
-  buildindex(basename = idx, reference = reference)
+  Rsubread::buildindex(basename = idx, reference = reference)
   
   files <- paste(path, ss[,'File'], sep = .Platform$file.sep)
 
@@ -100,13 +100,20 @@ metacrispr.align <- function(path, sampleSheet = NULL, outputDir = NULL,
   }
   bamFiles <- paste0(outputDir, .Platform$file.sep, 
                      basename(file_path_sans_ext(files, compression = TRUE)), '.bam')
+  
+  ## arbitrary length-based threshold for lowing the number of subread matches
+  ## really short reads fail to align if we don't do this
+  TH1 <- ifelse(nchar(paste0(guidePrefix, referenceTab$seq[1], guideSuffix)) < 25, 
+                1,
+                3)
 
-  align(index=idx,
+  Rsubread::align(index=idx,
         readfile1 = files, 
         output_file = bamFiles,
         maxMismatches = 2, indels=0, 
         nsubreads = 8, type = 'dna', nthreads = ncores,
-        unique = FALSE, nBestLocations = 2)
+        unique = FALSE, nBestLocations = 2,
+        TH1 = TH1)
   
   # write out a modified sample sheets
   ss_bam <- ss %>% 

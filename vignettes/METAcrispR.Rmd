@@ -87,9 +87,9 @@ metacrispr.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf1
               sampleSheet = "SampleSheet.txt", 
               outputDir = "/tmpdata/msmith/aligned",
               guideLibraries = c("/g/korbel/shared/projects/crispr_screens/balca_libraries/balca_lib_M1.csv", 
-                                 "/g/korbel/shared/projects/crispr_screens/balca_libraries/balca_lib_M2.csv",
+                                 "/g/korbel/shared/projects/crispr_screens/balca_libraries/balca_lib_M2.csv"),
               guidePrefix = NULL,
-              guideSuffix = "GTTTAAGAGCTATGCTGGAAACAGCATAGC"))
+              guideSuffix = "GTTTAAGAGCTATGCTGGAAACAGCATAGC")
 ```
 
 ## Counting alignments
