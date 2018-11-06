@@ -2,7 +2,7 @@
 ## include error handling to try using a different optimizer if the first throws a warning
 #' @import optimx
 #' @importFrom lmerTest lmer
-#' @importClassesFrom lmerTest merModLmerTest
+#' @importClassesFrom lmerTest lmerModLmerTest
 fitPanCellLibGuide <- function(dat) {
   if(sum(dat[,'norm_counts']) < 5) {
     return(data.frame())
@@ -32,7 +32,7 @@ fitPanCellLibGuide <- function(dat) {
 
 
 #' @import optimx
-#' @importFrom lmerTest lmer summary 
+#' @importFrom lmerTest lmer 
 fitPanCellGuide <- function(dat) {
   if(sum(dat[,'norm_counts']) < 5) {
     return(data.frame())

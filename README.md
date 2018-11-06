@@ -1,9 +1,9 @@
 Installation requires some additional packages.  The following code should install everything required:
 
 ```{r}
-source("http://www.bioconductor.org/biocLite.R")
-biocLite(c("BiocStyle","GGally","dplyr","ggplot2","data.table","lmerTest",
+install.packages(c('BiocManager', 'remotes'))
+BiocManager::install(c("BiocStyle","GGally","dplyr","ggplot2","data.table","lmerTest",
            "Biostrings","Rsubread","ShortRead","gridExtra","tibble","tidyr",
            "optimx","stringr","hadley/multidplyr"))
-biocLite("grimbough/METAcrispR")           
+BiocManager::install("grimbough/METAcrispR")           
 ```

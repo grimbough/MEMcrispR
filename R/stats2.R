@@ -3,7 +3,7 @@
 ## include error handling to try using a different optimizer if the first throws a warning
 #' @import optimx
 #' @importFrom lmerTest lmer
-#' @importClassesFrom lmerTest merModLmerTest
+#' @importClassesFrom lmerTest lmerModLmerTest
 .fitSampleLibGuide <- function(dat) {
   if(sum(dat[,'norm_counts']) == 0) {
     return(data.frame())
@@ -31,7 +31,7 @@
 ## include error handling to try using a different optimizer if the first throws a warning
 #' @import optimx
 #' @importFrom lmerTest lmer
-#' @importClassesFrom lmerTest merModLmerTest
+#' @importClassesFrom lmerTest lmerModLmerTest
 .fitLibGuide <- function(dat) {
   if(sum(dat[,'norm_counts']) == 0) {
     return(data.frame())
@@ -62,7 +62,7 @@
 
 
 #' @import optimx
-#' @importFrom lmerTest lmer summary 
+#' @importFrom lmerTest lmer 
 .fitGuide <- function(dat) {
   if(sum(dat[,'norm_counts']) < 10) {
     return(data.frame())

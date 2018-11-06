@@ -2,7 +2,7 @@
 ## include error handling to try using a different optimizer if the first throws a warning
 #' @import optimx
 #' @importFrom lmerTest lmer
-#' @importClassesFrom lmerTest merModLmerTest
+#' @importClassesFrom lmerTest lmerModLmerTest
 .fitLibGuide.sampleSpecific <- function(dat) {
   if(sum(dat[,'norm_counts']) < 5) {
     return(data.frame())
@@ -33,7 +33,7 @@
 
 
 #' @import optimx
-#' @importFrom lmerTest lmer summary 
+#' @importFrom lmerTest lmer 
 .fitGuide.sampleSpecific <- function(dat) {
   if(sum(dat[,'norm_counts']) < 5) {
     return(data.frame())

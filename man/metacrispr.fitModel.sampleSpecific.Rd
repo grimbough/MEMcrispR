@@ -4,7 +4,8 @@
 \alias{metacrispr.fitModel.sampleSpecific}
 \title{fitting the mixed effects model}
 \usage{
-metacrispr.fitModel.sampleSpecific(countsTable, controlString = "control")
+metacrispr.fitModel.sampleSpecific(countsTable,
+  controlString = "control")
 }
 \value{
 data.table of genes with log fold-change and adjusted p.values
