@@ -5,5 +5,5 @@ install.packages(c('BiocManager', 'remotes'))
 BiocManager::install(c("BiocStyle","GGally","dplyr","ggplot2","data.table","lmerTest",
            "Biostrings","Rsubread","ShortRead","gridExtra","tibble","tidyr",
            "optimx","stringr","hadley/multidplyr"))
-BiocManager::install("grimbough/METAcrispR")           
+BiocManager::install("grimbough/MEMcrispR")           
 ```

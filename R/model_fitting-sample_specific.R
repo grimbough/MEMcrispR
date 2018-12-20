@@ -69,7 +69,7 @@
 #' 
 #' @return data.table of genes with log fold-change and adjusted p.values
 #' @export
-metacrispr.fitModel.sampleSpecific <- function(countsTable, controlString = 'control') {
+memcrispr.fitModel.sampleSpecific <- function(countsTable, controlString = 'control') {
   
   if(!'norm_counts' %in% colnames(countsTable)) {
     countsTable <- mutate(countsTable, norm_counts = counts)
@@ -87,15 +87,15 @@ metacrispr.fitModel.sampleSpecific <- function(countsTable, controlString = 'con
           ## if there is only one guide for the gene, return NULL
           data.frame()
         } else {
-          metacrispr:::.fitGuide(dat = .)
+          memcrispr:::.fitGuide(dat = .)
         }
       } else {
         ## if we have 2 libraries, but only have one guide per library stick 
         ## with the simpler model
         if( nrow(unique(dat[,'guide_id'])) == nrow(unique(dat[,'library'])) ) {
-          metacrispr:::.fitGuide.sampleSpecific(dat = .)
+          memcrispr:::.fitGuide.sampleSpecific(dat = .)
         } else {
-          metacrispr:::.fitLibGuide.sampleSpecific(dat = .)
+          memcrispr:::.fitLibGuide.sampleSpecific(dat = .)
         }
       }) %>%
     ungroup()

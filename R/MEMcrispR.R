@@ -4,7 +4,7 @@
 #' experiments.
 #'
 #' @docType package
-#' @name metacrispR
+#' @name MEMcrispR
 #' 
 #' @import ggplot2
 #' @import dplyr
