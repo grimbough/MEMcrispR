@@ -39,25 +39,25 @@ For the moment, the sample sheet should be saved as a tab delimited text file.  
 The first step in an analysis is to load the library like this:
 
 ```{r, loadLib}
-library(metacrispr)
+library(MEMcrispR)
 ```
 
 # Starting with raw read data
 
 ## Aligning reads
 
-This step can be performed using any tool of your choice, but *metacrispr* provides an option to do this via the *Rsubread* package, using the function `metacrispr.align()`.
+This step can be performed using any tool of your choice, but *MEMcrispR* provides an option to do this via the *Rsubread* package, using the function `memcrispr.align()`.
 
 There are a number of arguments that you need to provide to this function: `path` defines the location of the folder containing the FASTQ files, and `sampleSheet` is the name of the sample sheet file, which should meet the structure defined earlier.  `outputDir` gives the location where the function should output the aligned bam files.
 
-The next argument is `guideLibraries` which allows you to specify the set of guide RNAs your reads should be aligned against. Currently *metacrispr* contains details for the GeCKOv2 and TKO CRISPR libraries, and you can choose any combination from **GeCKOv2_A**, **GeCKOv2_B**, **TKOv1_base** and **TKOv2_supp**. It is advisable to pick to the minimum selection that may still be possible e.g. if you used the GeCKO kit do not select *TKOv1...* as this will cause the alignment step to take longer than necessary.  It is also possible to provide details of other libraries that are not distributed with the package; this is discussed in the next section.
+The next argument is `guideLibraries` which allows you to specify the set of guide RNAs your reads should be aligned against. Currently *MEMcrispR* contains details for the GeCKOv2 and TKO CRISPR libraries, and you can choose any combination from **GeCKOv2_A**, **GeCKOv2_B**, **TKOv1_base** and **TKOv2_supp**. It is advisable to pick to the minimum selection that may still be possible e.g. if you used the GeCKO kit do not select *TKOv1...* as this will cause the alignment step to take longer than necessary.  It is also possible to provide details of other libraries that are not distributed with the package; this is discussed in the next section.
 
 Finally, we can use the `guidePrefix` and `guideSuffix` arguments to provide details of flanking sequences that surround the specific guide sequence and are common to all reads in the dataset. *Note: these used to be hard-coded for the GeCKO data, but you must provide them now we work with more libraries*.
 
 This function will create a **SampleSheet.txt** in the output directory, which can be used with the next function in our analysis meaning you do not need to create this each time.
 
 ```{r, alignReads, eval=FALSE, message=FALSE, cache=TRUE}
-metacrispr.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/raw_data/", 
+memcrispr.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/raw_data/", 
               sampleSheet = "SampleSheet.txt", 
               outputDir = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/aligned/",
               guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"),
@@ -67,7 +67,7 @@ metacrispr.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf1
 
 ### Using custom guide libraries
 
-If *metacrispr* doesn't include details of the CRISPR library that you are using, you can provide details of the guides manually.  To do this you can provide the `guideLibraries` argument with the location of one or more files detailing the guides in your library.  These files are required to be text files with four columns and one row per guide.  For each guide the columns give the ID of the targeted gene, a unique ID for the guide, the guide sequence, and a name for the library, with columns nameed **gene_id**,	**guide_id**, **seq**,	**library** respectively.  An example might look something like this:
+If *MEMcrispR* doesn't include details of the CRISPR library that you are using, you can provide details of the guides manually.  To do this you can provide the `guideLibraries` argument with the location of one or more files detailing the guides in your library.  These files are required to be text files with four columns and one row per guide.  For each guide the columns give the ID of the targeted gene, a unique ID for the guide, the guide sequence, and a name for the library, with columns nameed **gene_id**,	**guide_id**, **seq**,	**library** respectively.  An example might look something like this:
 
 ```
 gene_id	guide_id	seq	library
@@ -79,11 +79,11 @@ A3GALT2	sgA3GALT2_2	CTTCGAACGCGACGCGCATT	KOHGW-M1
 A3GALT2	sgA3GALT2_3	CGGCAGATCCTACTTACACT	KOHGW-M1
 ```
 
-An example of providing them to the `metacrispr.align()` function might look something like the code below. *NOTE: this actual example will perform badly, as it will align reads to the wrong guide library.*
+An example of providing them to the `memcrispr.align()` function might look something like the code below. *NOTE: this actual example will perform badly, as it will align reads to the wrong guide library.*
 
 
 ```{r, customLibs, eval=FALSE, message=FALSE, cache=TRUE}
-metacrispr.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/raw_data/", 
+memcrispr.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/raw_data/", 
               sampleSheet = "SampleSheet.txt", 
               outputDir = "/tmpdata/msmith/aligned",
               guideLibraries = c("/g/korbel/shared/projects/crispr_screens/balca_libraries/balca_lib_M1.csv", 
@@ -94,12 +94,12 @@ metacrispr.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf1
 
 ## Counting alignments
 
-After alignment we need to count how many reads aligned to each guide sequence.  This is simlar to using *samtools idxstat* if you're using an external program.  *metacrispr* performs this using the function `metacrispr.count()`.  Many of the arguments are the same as seen above, but not that this time `path` is the location of the aligned BAM files, and `outputDir` is the location where the table of counts should be created.
+After alignment we need to count how many reads aligned to each guide sequence.  This is simlar to using *samtools idxstat* if you're using an external program.  *MEMcrispR* performs this using the function `memcrispr.count()`.  Many of the arguments are the same as seen above, but not that this time `path` is the location of the aligned BAM files, and `outputDir` is the location where the table of counts should be created.
 
 This function will again create a **SampleSheet.txt** that can be directly used with the next function in our analysis.
 
 ```{r, countReads, eval=FALSE, message=FALSE, cache=TRUE}
-metacrispr.count(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/aligned", 
+memcrispr.count(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/aligned", 
               sampleSheet = "SampleSheet.txt", 
               outputDir = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10a/counts",
               guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"))
@@ -109,10 +109,10 @@ metacrispr.count(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf1
 
 ## Reading count data
 
-Once you've performed the alignement and guide counting we're ready to read the count data.  This is performed using the function `metacrispr.readCounts()`, which takes two arguments.  One of these is the name of the sample sheet file, and the other is the path where the sample sheet and read count files can be found.
+Once you've performed the alignement and guide counting we're ready to read the count data.  This is performed using the function `memcrispr.readCounts()`, which takes two arguments.  One of these is the name of the sample sheet file, and the other is the path where the sample sheet and read count files can be found.
 
 ```{r, readData, message=FALSE, cache=TRUE}
-guideCounts <- metacrispr.readCounts(sampleSheet = "SampleSheet.txt", 
+guideCounts <- memcrispr.readCounts(sampleSheet = "SampleSheet.txt", 
                                   path = "/g/korbel/shared/projects/crispr_screens/soft_agar/c93/counts")
 ```
 
@@ -127,7 +127,7 @@ guideCounts
 Given the nature of sequencing experiments, it is likely that there will be differences the total number of reads generated for the various conditions and replicates.  If we work with the raw counts, there is a chance that any trends we find in the data reflect the technical differences in read-depth, rather than anything biological.  In order to reduce the impact of these differences we can use the function `normalizeBetweenSamples()` to adjust the counts and bring the various samples in line with each other.
 
 ```{r, readCountNormalisation, message=FALSE}
-guideCounts <- metacrispr.normalizeBetweenSamples(guideCounts)
+guideCounts <- memcrispr.normalizeBetweenSamples(guideCounts)
 ```
 
 # Quality control plots
@@ -137,23 +137,23 @@ There are a number of statistics we can look at to evaluate the quality of the s
 For example, we can  assess the distribution of reads across the guides, and compare this across libraries and repicates using the function `guideDistributions()`.  You can use this to evaluate whether you need to perform the between sample normalisation mentioned previously.  If you have already carried out the normalisation `guideDistributions()` will display the distributions of both the raw and normalised counts, as in the example below:
 
 ```{r, qc_plots2, fig.height=5, fig.width=12.5, message=FALSE}
-metacrispr.guideDistribution(guideCounts)
+memcrispr.guideDistribution(guideCounts)
 ```
 
-If you have replicates of each condition (and you should have replicates) we can compare the counts of control guides using the function `metacrispr.compareControlGuides()`.  By default this will try to compare the counts for all guides across the replicates, not just the controls.  This can be very slow, so we can use the argument `controlString` to specify a pattern in the guide names that we should use to select the controls.  For the GeCKO libraries the control guides all contain the word 'control', but this be different for different CRIPR libraries.   If you have more than two replicates this function will show each compared to all the rest e.g. in the case of 3 replicates: rep1 vs rep2, rep1 vs rep3 & rep2 vs rep3.
+If you have replicates of each condition (and you should have replicates) we can compare the counts of control guides using the function `memcrispr.compareControlGuides()`.  By default this will try to compare the counts for all guides across the replicates, not just the controls.  This can be very slow, so we can use the argument `controlString` to specify a pattern in the guide names that we should use to select the controls.  For the GeCKO libraries the control guides all contain the word 'control', but this be different for different CRIPR libraries.   If you have more than two replicates this function will show each compared to all the rest e.g. in the case of 3 replicates: rep1 vs rep2, rep1 vs rep3 & rep2 vs rep3.
 
 ```{r, qc_plots, fig.height=6, fig.width=10, message=FALSE}
-metacrispr.compareControlGuides(guideCounts, controlString = "control")
+memcrispr.compareControlGuides(guideCounts, controlString = "control")
 ```
 
 Ideally the control counts will lie along the diagonal line and the correlation reported in the upper right half of the plots will be close to 1, indicating that the controls have performed similarly across the two replicates.  If this is not the case, then you may have cause to believe one (or more) of the replicates was not successful.
 
 # Fit mixed effects model
 
-The model can be fitted using the function `metacrispr.fitModel()`.  This calculates
+The model can be fitted using the function `memcrispr.fitModel()`.  This calculates
 
 ```{r, eval=FALSE}
-topTable <- metacrispr.fitModel(guideCounts)
+topTable <- memcrispr.fitModel(guideCounts)
 ```
 ```{r, eval=FALSE, echo=FALSE}
 load("/g/huber/users/msmith/geckoR/toptable.rda")
@@ -178,5 +178,5 @@ topTable2 <- metacrispr.fitModel.mc(guideCounts, ncores = 4)
 # Visualising results
 
 ```{r}
-metacrispr.volcanoPlot(topTable, p.thresh = 0.05, fc.thresh = 1)
+memcrispr.volcanoPlot(topTable, p.thresh = 0.05, fc.thresh = 1)
 ```

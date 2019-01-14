@@ -1,7 +1,7 @@
 # #' @importFrom tidyr spread
 # #' @importFrom gridExtra grid.arrange
 # #' @importFrom  utils combn
-# metacrispr.compareControlGuides <- function(countTable, controlString = NULL, treatment = NULL) {
+# memcrispr.compareControlGuides <- function(countTable, controlString = NULL, treatment = NULL) {
 #   
 #   dat <- ungroup(countTable)
 #   if(!is.null(controlString)) {
@@ -93,7 +93,7 @@
 
 #' Compare the counts of control guides for all samples in the experiment
 #' 
-#' @param countTable Standard \code{metacrispr} table of count data.
+#' @param countTable Standard \code{memcrispr} table of count data.
 #' @param controlString Specify a string that identifys the control guides.  
 #' This is often 'control', 'non-targetting' etc.  If this is left as NULL
 #' all guides will be compared, which can be very slow and/or crash.
@@ -101,7 +101,7 @@
 #' @export
 #' @importFrom tidyr spread
 #' @importFrom GGally ggscatmat
-metacrispr.compareControlGuides <- function(countTable, controlString = NULL) {
+memcrispr.compareControlGuides <- function(countTable, controlString = NULL) {
   
   dat <- ungroup(countTable)
   if(!is.null(controlString)) {
@@ -138,7 +138,7 @@ metacrispr.compareControlGuides <- function(countTable, controlString = NULL) {
 #' 
 #' @export
 #' @importFrom tidyr gather
-metacrispr.guideDistribution <- function(countTable) {
+memcrispr.guideDistribution <- function(countTable) {
   
   dat <- 
     ungroup(countTable) %>%
@@ -164,8 +164,8 @@ metacrispr.guideDistribution <- function(countTable) {
 #' specified p-value threshold and above a fold change threshold are 
 #' highlighted and named in the plot.
 #' 
-#' @param topTable Standard \code{metacrispr} table of model results.  Typically
-#' produced by \code{\link{metacrispr.fitModel}}.
+#' @param topTable Standard \code{memcrispr} table of model results.  Typically
+#' produced by \code{\link{memcrispr.fitModel}}.
 #' @param fc.thresh Specify a fold change cutoff. Expects to be provide the raw
 #' fold change, which will be automatically converted to log2 scale for 
 #' plotting.
@@ -174,7 +174,7 @@ metacrispr.guideDistribution <- function(countTable) {
 #' -log10 scale for plotting.
 #' 
 #' @export
-metacrispr.volcanoPlot <- function(topTable, fc.thresh = 1, p.thresh = 0.05) {
+memcrispr.volcanoPlot <- function(topTable, fc.thresh = 1, p.thresh = 0.05) {
   
   ggplot(topTable) + 
     geom_point(aes(x = log2(fc), y = -log10(1e-16+p_val)), alpha = 0.4, colour = "#939393") +
@@ -197,7 +197,7 @@ metacrispr.volcanoPlot <- function(topTable, fc.thresh = 1, p.thresh = 0.05) {
 }
 
 #' @export
-metacrispr.libraryCounts <- function(countTable) {
+memcrispr.libraryCounts <- function(countTable) {
   
   dat <- ungroup(countTable) %>%
     group_by(treatment, library, replicate) %>%
@@ -263,7 +263,7 @@ metacrispr.libraryCounts <- function(countTable) {
 
 #' @export
 #' @importFrom tidyr unite
-metacrispr.pcaPlot <- function(countTable, controlString = NULL) {
+memcrispr.pcaPlot <- function(countTable, controlString = NULL) {
   
   ## TODO: include proportion of variation explained
   
@@ -285,7 +285,7 @@ metacrispr.pcaPlot <- function(countTable, controlString = NULL) {
 }
 
 
-metacrispr.controlGuideCorrelation <- function(countsTable) {
+memcrispr.controlGuideCorrelation <- function(countsTable) {
   
   tmp <-
    ungroup(countsTable) %>%

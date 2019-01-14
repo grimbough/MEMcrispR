@@ -1,6 +1,6 @@
-Package: metacrispR
-Title: Mixed Effects Tool for Analysis of CRISPR screens
-Version: 0.0.24
+Package: MEMcrispR
+Title: Mixed Effects Model for the analysis of CRISPR screens
+Version: 0.0.25
 Authors@R: person("Mike", "Smith", email = "grimbough@gmail.com", role
         = c("aut"))
 Description: Alignment, quality control, and analysis of CRISPR screen 
@@ -9,9 +9,9 @@ License: MIT + file LICENSE
 VignetteBuilder: knitr
 Author: Mike Smith [aut]
 Maintainer: Mike Smith <grimbough@gmail.com>
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Depends:
-    R (>= 3.2)
+    R (>= 3.5)
 Imports:
     dplyr,
     ggplot2,

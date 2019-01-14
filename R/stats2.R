@@ -98,7 +98,7 @@
 #' 
 #' @return data.table of genes with log fold-change and adjusted p.values
 #' @export
-metacrispr.fitModel <- function(countsTable, controlString = 'control') {
+memcrispr.fitModel <- function(countsTable, controlString = 'control') {
   
   if(!'norm_counts' %in% colnames(countsTable)) {
     countsTable <- mutate(countsTable, norm_counts = counts)
@@ -116,15 +116,15 @@ metacrispr.fitModel <- function(countsTable, controlString = 'control') {
           ## if there is only one guide for the gene, return NULL
           data.frame()
         } else {
-          metacrispR:::.fitGuide(dat = .)
+          MEMcrispR:::.fitGuide(dat = .)
         }
       } else {
         ## if we have 2 libraries, but only have one guide per library stick 
         ## with the simpler model
         if( nrow(unique(.[,'guide_id'])) == nrow(unique(.[,'library'])) ) {
-          metacrispR:::.fitGuide(dat = .)
+          MEMcrispR:::.fitGuide(dat = .)
         } else {
-          metacrispR:::.fitLibGuide(dat = .)
+          MEMcrispR:::.fitLibGuide(dat = .)
         }
       }) %>%
     ungroup()
@@ -147,7 +147,7 @@ metacrispr.fitModel <- function(countsTable, controlString = 'control') {
 #' 
 #' @return data.table of genes with log fold-change and adjusted p.values
 #' @export
-metacrispr.fitModel.mc <- function(countsTable, ncores = NA) {
+memcrispr.fitModel.mc <- function(countsTable, ncores = NA) {
   
   require(multidplyr)
   cluster <- multidplyr::create_cluster(cores = ncores)
@@ -168,15 +168,15 @@ metacrispr.fitModel.mc <- function(countsTable, ncores = NA) {
         if (nrow(unique(.[,'guide_id'])) == 1) { 
           data.frame()
         } else {
-          metacrispR:::.fitGuide(dat = .) 
+          MEMcrispR:::.fitGuide(dat = .) 
         } 
       } else {
         ## if we have 2 libraries, but only have one guide per library stick 
         ## with the simpler model
         if( nrow(unique(.[,'guide_id'])) == nrow(unique(.[,'library'])) ) {
-          metacrispR:::.fitGuide(dat = .)
+          MEMcrispR:::.fitGuide(dat = .)
         } else {
-          metacrispR:::.fitLibGuide(dat = .)
+          MEMcrispR:::.fitLibGuide(dat = .)
         }
       }
     ) %>%
@@ -190,7 +190,6 @@ metacrispr.fitModel.mc <- function(countsTable, ncores = NA) {
     mutate(fdr = p.adjust(p_val, method = "fdr")) %>%
     mutate(fc = exp(b_stat)) %>%
     arrange(desc(fc))
-  
   
   return(modelResults)
 }
