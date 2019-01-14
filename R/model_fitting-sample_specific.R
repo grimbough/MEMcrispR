@@ -7,26 +7,34 @@
   if(sum(dat[,'norm_counts']) < 5) {
     return(data.frame())
   }
-  m1 <- tryCatch(lmer(log(norm_counts + 1) ~ treatment + sample_id + treatment:cell_line + (1 | library / guide_id), 
-                      data = as.data.frame(dat), REML = FALSE),
-                 warning = function(w) { ## if we get a warning, run with a different but slower optimiser
-                   suppressMessages(require(optimx))
-                   lmer(log(norm_counts + 1) ~ treatment + sample_id + treatment:cell_line + (1 | library / guide_id), 
-                        data = as.data.frame(dat), REML = FALSE,
-                        control = lme4::lmerControl(optimizer="optimx", optCtrl=list(method="L-BFGS-B")))
-                 }
+  m1 <- tryCatch(
+    suppressMessages(
+      lmer(log(norm_counts + 1) ~ treatment + sample_id + treatment:sample_id + (1 | library / guide_id), 
+           data = as.data.frame(dat), REML = FALSE)
+    ),
+    warning = function(w) { ## if we get a warning, run with a different but slower optimiser
+      suppressMessages(require(optimx))
+      lmer(log(norm_counts + 1) ~ treatment + sample_id + treatment:sample_id + (1 | library / guide_id), 
+           data = as.data.frame(dat), REML = FALSE,
+           control = lme4::lmerControl(optimizer="optimx", optCtrl=list(method="L-BFGS-B")))
+    }
   )
   
-  m1_null <- tryCatch(lmer(log(norm_counts + 1) ~ treatment + sample_id + (1 | library / guide_id), data = as.data.frame(dat)),
-                      warning = function(w) { ## if we get a warning, run with a different but slower optimiser
-                        suppressMessages(require(optimx))
-                        lmer(log(norm_counts + 1) ~ treatment + sample_id + (1 | library / guide_id), data = as.data.frame(dat), 
-                             control = lme4::lmerControl(optimizer="optimx", optCtrl=list(method="L-BFGS-B")))
-                      }
+  m1_null <- tryCatch(
+    suppressMessages(
+      lmer(log(norm_counts + 1) ~ treatment + sample_id + (1 | library / guide_id), 
+           data = as.data.frame(dat), REML = FALSE)
+    ),
+    warning = function(w) { ## if we get a warning, run with a different but slower optimiser
+      suppressMessages(require(optimx))
+      lmer(log(norm_counts + 1) ~ treatment + sample_id + (1 | library / guide_id), 
+           data = as.data.frame(dat), REML = FALSE,
+           control = lme4::lmerControl(optimizer="optimx", optCtrl=list(method="L-BFGS-B")))
+    }
   )
   res <- coefficients(summary(m1)) %>%
     data.frame(term = rownames(.))
-  anova <-as.numeric(anova(m1, m1_null)$"Pr(>Chisq)"[2])
+  anova <-as.numeric(anova(m1, m1_null,refit=FALSE)$"Pr(>Chisq)"[2])
   res <- mutate(res, anova_pval = anova)
   return(res)
 }
@@ -38,27 +46,33 @@
   if(sum(dat[,'norm_counts']) < 5) {
     return(data.frame())
   }
-  m1 <- tryCatch(lmer(log(norm_counts + 1) ~ treatment + sample_id + treatment:cell_line + (1 | guide_id), 
-                      data = as.data.frame(dat), REML = FALSE),
-                 warning = function(w) { ## if we get a warning, run with a different but slower optimiser
-                   suppressMessages(require(optimx))
-                   lmer(log(norm_counts + 1) ~ treatment + sample_id + treatment:cell_line + (1 | guide_id), 
-                        data = as.data.frame(dat), REML = FALSE, 
-                        control = lme4::lmerControl(optimizer="optimx", optCtrl=list(method="L-BFGS-B")))
-                 }
+  m1 <- tryCatch(
+    suppressMessages(
+      lmer(log(norm_counts + 1) ~ treatment + sample_id + treatment:sample_id + (1 | guide_id), 
+           data = as.data.frame(dat), REML = FALSE)
+    ),
+    warning = function(w) { ## if we get a warning, run with a different but slower optimiser
+      suppressMessages(require(optimx))
+      lmer(log(norm_counts + 1) ~ treatment + sample_id + treatment:sample_id + (1 | guide_id), 
+           data = as.data.frame(dat), REML = FALSE, 
+           control = lme4::lmerControl(optimizer="optimx", optCtrl=list(method="L-BFGS-B")))
+    }
   )
-  m1_null <- tryCatch(lmer(log(norm_counts + 1) ~ treatment + sample_id + (1 | guide_id), 
-                           data = as.data.frame(dat), REML = FALSE),
-                      warning = function(w) { ## if we get a warning, run with a different but slower optimiser
-                        suppressMessages(require(optimx))
-                        lmer(log(norm_counts + 1) ~  treatment + sample_id + (1 | guide_id), 
-                             data = as.data.frame(dat), REML = FALSE, 
-                             control = lme4::lmerControl(optimizer="optimx", optCtrl=list(method="L-BFGS-B")))
-                      }
+  m1_null <- tryCatch(
+    suppressMessages(
+      lmer(log(norm_counts + 1) ~ treatment + sample_id + (1 | guide_id), 
+           data = as.data.frame(dat), REML = FALSE)
+    ),
+    warning = function(w) { ## if we get a warning, run with a different but slower optimiser
+      suppressMessages(require(optimx))
+      lmer(log(norm_counts + 1) ~  treatment + sample_id + (1 | guide_id), 
+           data = as.data.frame(dat), REML = FALSE, 
+           control = lme4::lmerControl(optimizer="optimx", optCtrl=list(method="L-BFGS-B")))
+    }
   )
   res <- coefficients(summary(m1)) %>%
     data.frame(term = rownames(.))
-  anova <-as.numeric(anova(m1, m1_null)$"Pr(>Chisq)"[2])
+  anova <-as.numeric(anova(m1, m1_null, refit=FALSE)$"Pr(>Chisq)"[2])
   res <- mutate(res, anova_pval = anova)
   return(res)
 }
@@ -77,7 +91,7 @@ memcrispr.fitModel.sampleSpecific <- function(countsTable, controlString = 'cont
   
   ct <- ungroup(countsTable) %>% 
     filter(!grepl(controlString, gene_id, ignore.case = TRUE)) %>%
-    select(guide_id, treatment, library, gene_id, norm_counts)
+    select(guide_id, treatment, library, sample_id, gene_id, norm_counts)
   ct <- data.frame(ct)
   
   modelResults <- ct %>%
@@ -87,15 +101,15 @@ memcrispr.fitModel.sampleSpecific <- function(countsTable, controlString = 'cont
           ## if there is only one guide for the gene, return NULL
           data.frame()
         } else {
-          memcrispr:::.fitGuide(dat = .)
+          MEMcrispR:::.fitGuide(dat = .)
         }
       } else {
         ## if we have 2 libraries, but only have one guide per library stick 
         ## with the simpler model
-        if( nrow(unique(dat[,'guide_id'])) == nrow(unique(dat[,'library'])) ) {
-          memcrispr:::.fitGuide.sampleSpecific(dat = .)
+        if( nrow(unique(.[,'guide_id'])) == nrow(unique(.[,'library'])) ) {
+          MEMcrispR:::.fitGuide.sampleSpecific(dat = .)
         } else {
-          memcrispr:::.fitLibGuide.sampleSpecific(dat = .)
+          MEMcrispR:::.fitLibGuide.sampleSpecific(dat = .)
         }
       }) %>%
     ungroup()
