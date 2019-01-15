@@ -15,7 +15,6 @@ Depends:
 Imports:
     dplyr,
     ggplot2,
-    data.table,
     lmerTest,
     Biostrings,
     Rsubread,

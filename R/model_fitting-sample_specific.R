@@ -115,12 +115,11 @@ memcrispr.fitModel.sampleSpecific <- function(countsTable, controlString = 'cont
     ungroup()
   
   ## select the rows we want to rename columns for b and t statisics.
-  modelResults <- filter(modelResults, term == "treatment") %>% 
-    select(gene_id, Estimate, t.value, Pr...t..) %>% 
-    rename(b_stat = Estimate, t_stat = t.value, p_val = Pr...t..) %>% 
-    mutate(fdr = p.adjust(p_val, method = "fdr")) %>%
+  modelResults <- select(modelResults, gene_id, term, Estimate, t.value, anova_pval) %>% 
+    rename(b_stat = Estimate, t_stat = t.value) %>% 
+    mutate(fdr_anova = p.adjust(anova_pval, method = "fdr")) %>%
     mutate(fc = exp(b_stat)) %>%
-    arrange(fdr)
+    arrange(gene_id)
   
   return(modelResults)
 }

@@ -1,5 +1,5 @@
 ---
-title: "Using METAcrispR"
+title: "Using MEM-CrispR"
 author: "Mike Smith"
 output: 
   BiocStyle::html_document:
@@ -179,4 +179,10 @@ topTable2 <- metacrispr.fitModel.mc(guideCounts, ncores = 4)
 
 ```{r}
 memcrispr.volcanoPlot(topTable, p.thresh = 0.05, fc.thresh = 1)
+```
+
+# Testing for sample specific effects
+
+```{r, eval=FALSE}
+interactionEffects <- memcrispr.fitModel.sampleSpecific(guideCounts, controlString = "control")
 ```

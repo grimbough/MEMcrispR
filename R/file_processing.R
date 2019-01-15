@@ -81,10 +81,8 @@ readGuideSequencesSimple <- function(file) {
 #' @param sampleSheet Name of the sample sheet file. If left as \code{NULL}
 #' this will default to `\code{SampleSheet.txt}'.
 #' 
-#' @return data.table of counts
+#' @return A data_frame containing counts for all guides across all samples.
 #' @export
-#' @importFrom data.table data.table rbindlist
-#' @importClassesFrom data.table data.table
 memcrispr.readCounts <- function(path, sampleSheet = NULL, guideLibraries = NULL) {
   
   if(is.null(sampleSheet))
