@@ -67,7 +67,7 @@ memcrispr.align(path = "/g/korbel/shared/projects/crispr_screens/soft_agar/mcf10
 
 ### Using custom guide libraries
 
-If *MEMcrispR* doesn't include details of the CRISPR library that you are using, you can provide details of the guides manually.  To do this you can provide the `guideLibraries` argument with the location of one or more files detailing the guides in your library.  These files are required to be text files with four columns and one row per guide.  For each guide the columns give the ID of the targeted gene, a unique ID for the guide, the guide sequence, and a name for the library, with columns nameed **gene_id**,	**guide_id**, **seq**,	**library** respectively.  An example might look something like this:
+If *MEMcrispR* doesn't include details of the CRISPR library that you are using, you can provide details of the guides manually.  To do this you can provide the `guideLibraries` argument with the location of one or more files detailing the guides in your library.  These files are required to be text files with four columns and one row per guide.  For each guide the columns give the ID of the targeted gene, a unique ID for the guide, the guide sequence, and a name for the library, with columns named **gene_id**,	**guide_id**, **seq**,	**library** respectively.  An example might look something like this:
 
 ```
 gene_id	guide_id	seq	library

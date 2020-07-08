@@ -3,13 +3,13 @@ readCounts <- function(file, path = NULL, sampleID = NULL, treatment = NULL, rep
     countsTable <- read.table(file.path(path, file), sep="\t", stringsAsFactors=FALSE)
     ## remove the last line, this holds the counts of unmapped reads
     countsTable <- countsTable[-nrow(countsTable), ]
-    return(data_frame("sample_id" = sampleID, "treatment" = treatment, "replicate" = replicate, "guide_id" = countsTable[,1], "counts" = countsTable[,3]))
+    return(tibble("sample_id" = sampleID, "treatment" = treatment, "replicate" = replicate, "guide_id" = countsTable[,1], "counts" = countsTable[,3]))
 }
 
 
 readGuideSequences <- function(file, path = NULL, libraryName = NULL) {
     guides <- read.table(file.path(path, file), sep="\t", stringsAsFactors=FALSE)
-    guides <- data_frame("Library" = libraryName, "guide_id" = .fixGuideNames(guides[,1]), "Gene" = .extractGeneSymbol(guides[,1]), "GuideSeq" = guides[,2])
+    guides <- tibble("Library" = libraryName, "guide_id" = .fixGuideNames(guides[,1]), "Gene" = .extractGeneSymbol(guides[,1]), "GuideSeq" = guides[,2])
     guides <- mutate(guides, GC = as.integer(lapply(gregexpr("C|G", GuideSeq), length)))
     return(guides)
 }
@@ -17,7 +17,7 @@ readGuideSequences <- function(file, path = NULL, libraryName = NULL) {
 ## updated to work with the newer format and updated ids
 readGuideSequences2 <- function(file, path = NULL, libraryName = NULL) {
   guides <- read.delim(file.path(path, file), sep=",", stringsAsFactors=FALSE)
-  guides <- data_frame("Library" = .libFromGuideName(guides[,2]), "guide_id" = guides[,2], "Gene" = guides[,1], "GuideSeq" = guides[,3])
+  guides <- tibble("Library" = .libFromGuideName(guides[,2]), "guide_id" = guides[,2], "Gene" = guides[,1], "GuideSeq" = guides[,3])
   guides <- mutate(guides, GC = as.integer(lapply(gregexpr("C|G", GuideSeq), length)))
   return(guides)
 }
@@ -29,7 +29,7 @@ print_and_capture <- function(x)
 
 readGuideSequencesSimple <- function(file) {
   guides <- read.delim(file.path(file), sep="\t", stringsAsFactors=FALSE)
-  guides <- as_data_frame(guides)
+  guides <- as_tibble(guides)
   if(anyDuplicated(guides$guide_id)) {
     idx <- sort(c(which(duplicated(tmp$guide_id)), 
                   which(duplicated(tmp$guide_id, fromLast = TRUE))))
@@ -81,7 +81,7 @@ readGuideSequencesSimple <- function(file) {
 #' @param sampleSheet Name of the sample sheet file. If left as \code{NULL}
 #' this will default to `\code{SampleSheet.txt}'.
 #' 
-#' @return A data_frame containing counts for all guides across all samples.
+#' @return A tibble containing counts for all guides across all samples.
 #' @export
 memcrispr.readCounts <- function(path, sampleSheet = NULL, guideLibraries = NULL) {
   
@@ -118,13 +118,13 @@ memcrispr.readCounts <- function(path, sampleSheet = NULL, guideLibraries = NULL
     guideLibraries <- guideLibraries[file.exists(guideLibraries)]
     if(!length(guideLibraries))
       stop('Cannot find guide files')
-    lib_gRNAs <- as_data_frame(
+    lib_gRNAs <- as_tibble(
       dplyr::bind_rows(lapply(guideLibraries, read.table, 
                               sep = "\t", stringsAsFactors = FALSE, header = TRUE)))
   }
   
   finalTable <- left_join(allCounts, lib_gRNAs, by = "guide_id") %>% 
-    as_data_frame() %>%
+    as_tibble() %>%
     arrange(gene_id) %>%
     mutate(sample_id = as.character(sample_id), replicate = as.integer(replicate), 
            treatment = as.integer(treatment), gene_id = as.character(gene_id), 

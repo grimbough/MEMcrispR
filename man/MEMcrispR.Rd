@@ -3,7 +3,6 @@
 \docType{package}
 \name{MEMcrispR}
 \alias{MEMcrispR}
-\alias{MEMcrispR-package}
 \title{Mixed Effects Tool for Analysis of CRISPR screens}
 \description{
 Alignment, quality control, and analysis of CRISPR screen 

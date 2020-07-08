@@ -37,10 +37,15 @@
       if(file.exists(f)) {
         tmp <- readGuideSequencesSimple(f)
         referenceTab[[ tmp$library[1] ]] <- tmp
+      } else {
+        warning('Guide file \'', f, '\' not found.', call. = FALSE)
       }
     }
   }
   
+  if(length(referenceTab) == 0) {
+    stop("Unable to generate reference from guide RNAs", call. = FALSE)
+  }
   referenceTab <- do.call('rbind', referenceTab)
   
   return(referenceTab)
@@ -142,7 +147,7 @@ memcrispr.align <- function(path, sampleSheet = NULL, outputDir = NULL,
 #' 
 #' @importFrom Rsubread featureCounts 
 #' @importFrom tidyr separate gather
-#' @importFrom tibble as_data_frame data_frame
+#' @importFrom tibble as_tibble
 #' @export
 memcrispr.count <- function(path, sampleSheet = NULL, outputDir = NULL, 
                           guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"),
@@ -173,8 +178,8 @@ memcrispr.count <- function(path, sampleSheet = NULL, outputDir = NULL,
   counts <- count_stats$counts
   
   colnames(counts) <- basename(bamFiles)
-  counts2 <- cbind(guide_id = rownames(counts), as_data_frame(counts)) %>%
-    as_data_frame() %>%
+  counts2 <- cbind(guide_id = rownames(counts), as_tibble(counts)) %>%
+    as_tibble() %>%
     separate(guide_id, into = c("library", 'guide_id'), sep = ':')
   
   # here we try to work out which reference a sample actually aligned to

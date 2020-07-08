@@ -4,8 +4,13 @@
 \alias{memcrispr.count}
 \title{Count occurrences of each guide in aligned data.}
 \usage{
-memcrispr.count(path, sampleSheet = NULL, outputDir = NULL,
-  guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"), ncores = 4)
+memcrispr.count(
+  path,
+  sampleSheet = NULL,
+  outputDir = NULL,
+  guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"),
+  ncores = 4
+)
 }
 \arguments{
 \item{path}{Full file path to the folder containing the data.}

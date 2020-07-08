@@ -4,9 +4,15 @@
 \alias{memcrispr.align}
 \title{Align reads to reference}
 \usage{
-memcrispr.align(path, sampleSheet = NULL, outputDir = NULL,
-  guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"), guidePrefix = NULL,
-  guideSuffix = NULL, ncores = 4)
+memcrispr.align(
+  path,
+  sampleSheet = NULL,
+  outputDir = NULL,
+  guideLibraries = c("GeCKOv2_A", "GeCKOv2_B"),
+  guidePrefix = NULL,
+  guideSuffix = NULL,
+  ncores = 4
+)
 }
 \arguments{
 \item{path}{Full file path to the folder containing the data.}
