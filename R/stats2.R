@@ -116,7 +116,9 @@ memcrispr.fitModel <- function(countsTable, controlString = 'control') {
           ## if there is only one guide for the gene, return NULL
           data.frame()
         } else {
-          MEMcrispR:::.fitGuide(dat = .)
+          suppressMessages(
+            MEMcrispR:::.fitGuide(dat = .)
+          )
         }
       } else {
         ## if we have 2 libraries, but only have one guide per library stick 
@@ -151,7 +153,11 @@ memcrispr.fitModel <- function(countsTable, controlString = 'control') {
 #' 
 #' @return data.table of genes with log fold-change and adjusted p.values
 #' @export
-memcrispr.fitModel.mc <- function(countsTable, ncores = NA) {
+memcrispr.fitModel.mc <- function(countsTable, ncores) {
+  
+  if(missing(ncores)) {
+    ncores <- getOption(Ncpus, 1L)
+  }
   
   require(multidplyr)
   cluster <- multidplyr::new_cluster(n = ncores)
