@@ -13,7 +13,7 @@ memcrispr.readCounts(path, sampleSheet = NULL, guideLibraries = NULL)
 this will default to `\code{SampleSheet.txt}'.}
 }
 \value{
-A data_frame containing counts for all guides across all samples.
+A tibble containing counts for all guides across all samples.
 }
 \description{
 This is the main data import function for the \code{MEMcrispR} package.  It 

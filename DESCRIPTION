@@ -1,6 +1,6 @@
 Package: MEMcrispR
 Title: Mixed Effects Model for the analysis of CRISPR screens
-Version: 0.0.26
+Version: 0.0.27
 Authors@R: person("Mike", "Smith", email = "grimbough@gmail.com", role
         = c("aut"))
 Description: Alignment, quality control, and analysis of CRISPR screen 
@@ -31,5 +31,7 @@ Suggests:
     multidplyr,
     rmarkdown,
     BiocStyle
+Remotes:
+    tidyverse/multidplyr
 LazyData: yes
 Encoding: UTF-8

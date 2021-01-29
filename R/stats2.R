@@ -122,9 +122,13 @@ memcrispr.fitModel <- function(countsTable, controlString = 'control') {
         ## if we have 2 libraries, but only have one guide per library stick 
         ## with the simpler model
         if( nrow(unique(.[,'guide_id'])) == nrow(unique(.[,'library'])) ) {
-          MEMcrispR:::.fitGuide(dat = .)
+          suppressMessages(
+            MEMcrispR:::.fitGuide(dat = .)
+          )
         } else {
-          MEMcrispR:::.fitLibGuide(dat = .)
+          suppressMessages(
+            MEMcrispR:::.fitLibGuide(dat = .)
+          )
         }
       }) %>%
     ungroup()
@@ -150,7 +154,7 @@ memcrispr.fitModel <- function(countsTable, controlString = 'control') {
 memcrispr.fitModel.mc <- function(countsTable, ncores = NA) {
   
   require(multidplyr)
-  cluster <- multidplyr::create_cluster(cores = ncores)
+  cluster <- multidplyr::new_cluster(n = ncores)
   
   if(!'norm_counts' %in% colnames(countsTable)) {
     countsTable <- mutate(countsTable, norm_counts = counts)
@@ -159,10 +163,11 @@ memcrispr.fitModel.mc <- function(countsTable, ncores = NA) {
   ct <- ungroup(countsTable) %>% 
     filter(!grepl('control', gene_id, ignore.case = TRUE)) %>%
     select(guide_id, treatment, library, gene_id, norm_counts)
-  ct <- data.frame(ct)
+  ct <- data.frame(ct) %>%
+    group_by(gene_id)
   
   modelResults <- 
-    partition(ct, gene_id, cluster = cluster) %>%
+    partition(ct, cluster = cluster) %>%
     do( 
       if (nrow(unique(.[,'library'])) == 1) {
         if (nrow(unique(.[,'guide_id'])) == 1) { 

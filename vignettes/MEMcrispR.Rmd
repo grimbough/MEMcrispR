@@ -166,13 +166,13 @@ To improve the speed of the model fitting step, you can also try a multicore app
 In order to use this approach you will need to install the multidplyr package.  This is currently not available on CRAN, but can be installed from github using the code below.  You will only need to do this step the first time you try to run the multicore model fitting, after that the package will be be installed and available.  
 
 ```{r, installMutlidplyr, eval=FALSE}
-devtools::install_github("hadley/multidplyr")
+devtools::install_github("tidyverse/multidplyr")
 ```
 
 Since mutlidplyr is not in CRAN, support for this is to be considered experimental, although I have had no problems running it in practice.  You can execute the multicore model fit in a very similar fashion to before, just this time using the `fitModel.mc()` function.
 
 ```{r, fitModel.mc, eval=FALSE}
-topTable2 <- metacrispr.fitModel.mc(guideCounts, ncores = 4)
+topTable2 <- memcrispr.fitModel.mc(guideCounts, ncores = 4)
 ```
 
 # Visualising results
